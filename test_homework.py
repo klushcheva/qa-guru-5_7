@@ -108,7 +108,7 @@ def test_downloaded_file_size():
     assert size == 30803
 
 
-def test_open_zip():
+def test_add_zip():
     zip_path = os.path.join(PROJECT_ROOT_PATH, 'resources')
     zip_file = 'resources.zip'
     with zipfile.ZipFile(zip_file, 'w') as zip_files:
