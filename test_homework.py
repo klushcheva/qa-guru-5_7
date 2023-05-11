@@ -69,3 +69,35 @@ def test_open_xlsx():
     sheet = workbook.active
     print(sheet.cell(row=3, column=2).value)
     assert sheet.cell(row=3, column=2).value == 'Mara'
+
+def test_open_file_with_browser():
+    options = webdriver.ChromeOptions()
+    prefs = {
+        "download.default_directory": os.path.join(PROJECT_ROOT_PATH, 'tmp'),
+        "download.prompt_for_download": False
+    }
+    options.add_experimental_option("prefs", prefs)
+
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+
+    browser.config.driver = driver
+
+    browser.open("https://github.com/pytest-dev/pytest")
+    browser.element(".d-none .Button-label").click()
+    browser.element('[data-open-app="link"]').click()
+    time.sleep(3)
+    file_element = os.path.join(tmp, 'pytest-main.zip')
+    size_file = os.path.getsize(file_element)
+    assert size_file == 1565741
+
+def test_downloaded_file_size():
+    # TODO сохранять и читать из tmp, использовать универсальный путь
+    url = 'https://selenium.dev/images/selenium_logo_square_green.png'
+    logo = os.path.join(PROJECT_ROOT_PATH, 'tmp', 'selenium_logo_square_green.png')
+    r = requests.get(url)
+    with open(logo, 'wb') as file:
+            file.write(r.content)
+
+    size = os.path.getsize(logo)
+
+    assert size == 30803
