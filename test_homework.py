@@ -16,6 +16,7 @@ from zipfile import ZipFile
 
 PROJECT_ROOT_PATH = os.path.dirname(os.path.abspath(__file__))
 
+
 def test_open_csv():
     # TODO оформить в тест, добавить ассерты и использовать универсальный путь
     csv_file = os.path.join(PROJECT_ROOT_PATH, resources, 'eggs.csv')
@@ -31,6 +32,7 @@ def test_open_csv():
             check_list.append(row)
         assert check_list[0] == ['Anna', 'Pavel', 'Peter']
         assert check_list[1] == ['Alex', 'Serj', 'Yana']
+
 
 def test_open_pdf():
     # TODO оформить в тест, добавить ассерты и использовать универсальный путь
@@ -62,6 +64,7 @@ def test_open_xls():
     assert book.sheet_names() == ['Sheet1']
     assert sheet.ncols == 8
 
+
 def test_open_xlsx():
     # TODO оформить в тест, добавить ассерты и использовать универсальный путь
     xlsx_file = os.path.join(PROJECT_ROOT_PATH, 'resources', 'file_example_XLSX_50.xlsx')
@@ -69,6 +72,7 @@ def test_open_xlsx():
     sheet = workbook.active
     print(sheet.cell(row=3, column=2).value)
     assert sheet.cell(row=3, column=2).value == 'Mara'
+
 
 def test_open_file_with_browser():
     options = webdriver.ChromeOptions()
@@ -90,14 +94,28 @@ def test_open_file_with_browser():
     size_file = os.path.getsize(file_element)
     assert size_file == 1565741
 
+
 def test_downloaded_file_size():
     # TODO сохранять и читать из tmp, использовать универсальный путь
     url = 'https://selenium.dev/images/selenium_logo_square_green.png'
     logo = os.path.join(PROJECT_ROOT_PATH, 'tmp', 'selenium_logo_square_green.png')
     r = requests.get(url)
     with open(logo, 'wb') as file:
-            file.write(r.content)
+        file.write(r.content)
 
     size = os.path.getsize(logo)
 
     assert size == 30803
+
+
+def test_open_zip():
+    zip_path = os.path.join(PROJECT_ROOT_PATH, 'resources')
+    zip_file = 'resources.zip'
+    with zipfile.ZipFile(zip_file, 'w') as zip_files:
+        for i in os.listdir(zip_path):
+            file_path = os.path.join(zip_path, i)
+            zip_files.write(file_path, i)
+
+    with zipfile.ZipFile(zip_file, "r") as zip_files:
+        for i in os.listdir(zip_path):
+            assert i in zip_files.namelist()
